@@ -2,13 +2,12 @@ import java.net.*;
 import java.io.*;
 
 public class ServerThread {
-	
-	static int counter = 0;
-	static Server2 serverList[] = new Server2[10]; 
-	static String nameList[] = new String[10];
+	static final int maxLog = 10;
+	static Server2 serverList[] = new Server2[maxLog]; 
+	static String nameList[] = new String[maxLog];
 
 	public static void main(String[] args) throws IOException {
-
+		int checkLogin = 0;
 		if (args.length != 1) {
 			System.err.println("Usage: java ServerThread <port number>");
 			System.exit(1);
@@ -16,21 +15,33 @@ public class ServerThread {
 		int portNumber = Integer.parseInt(args[0]);
 		introMessage(portNumber);
 		
-		new recieveThreadMain().start();
+		new recieveThreadMain(maxLog).start();
 		
 		try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
 			while (true) {
-				Server2 curr = new Server2(serverSocket.accept(), counter);
+				Server2 curr = new Server2(serverSocket.accept(), checkLogin = assignLogin());
 				curr.start();
-				serverList[counter] = curr;
-				counter++;
+				if(checkLogin > 0){
+					serverList[checkLogin] = curr;
+				}
 			}
 		} catch (IOException e) {
 			System.err.println("Could not listen on port " + portNumber);
 			System.exit(-1);
 		}
 	}
-
+	
+	public static int assignLogin(){
+		for(int i = 0; i < maxLog; i++){
+			if(ServerThread.nameList[i] == null){
+				System.out.println("assigning " + i);
+				return i;
+			}
+		}
+		System.out.println("assigning 1");
+		return -1;
+	}
+	
 	public static void introMessage(int portNumber) {
 		try
 	    {
@@ -60,9 +71,14 @@ public class ServerThread {
 
 class recieveThreadMain extends Thread {
 
+	int maxLog;
+	public recieveThreadMain(int maxLog){
+		this.maxLog = maxLog;
+	}
 	public void run() {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		String line;
+		
 		
 		try {
 			while ((line = reader.readLine()) != null) {
@@ -104,7 +120,7 @@ class recieveThreadMain extends Thread {
 			String name = line.substring(0, pos);
 			line = line.substring(pos + 1);
 			boolean check = true;
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < maxLog; i++) {
 				if (ServerThread.nameList[i] != null) {
 					if (ServerThread.nameList[i].equalsIgnoreCase(name)) {
 						ServerThread.serverList[i].sendMessage("[SERVER]: " + line);

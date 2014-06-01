@@ -45,10 +45,16 @@ class recieveThread2 extends Thread
 			try {
 				if ((receiveMessage = receiveRead.readLine()) != null) {
 					System.out.println(receiveMessage);
+					if(receiveMessage.endsWith("SERVER_COMMAND:EXIT")){
+						Thread.sleep(3000);
+						System.exit(1);
+					}
 				}
 			} catch (IOException e) {
 				System.out.println("Other Client dissconnected... Killing current application.");
 				System.exit(1);
+			} catch (InterruptedException e) {
+				System.err.println("Thread isen't tired, won't sleep.");
 			}
 		} 
 	}
