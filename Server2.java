@@ -25,8 +25,13 @@ public class Server2 extends Thread {
 			e1.printStackTrace();
 		}
 		pwrite = new PrintWriter(ostream, true);
-		new recieveThread(sock, pwrite, id).start();
-
+		if(id == -1){
+			pwrite.println("Server is too busy at the moment. Try again later. SERVER_COMMAND:EXIT");
+			return;
+		}
+		else{
+			new recieveThread(sock, pwrite, id).start();
+		}
 	}
 
 	public void sendMessage(String input) {
