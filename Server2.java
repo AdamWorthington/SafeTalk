@@ -26,6 +26,7 @@ public class Server2 extends Thread {
 		}
 		pwrite = new PrintWriter(ostream, true);
 		if(id == -1){
+			
 			pwrite.println("Server is too busy at the moment. Try again later. SERVER_COMMAND:EXIT");
 			return;
 		}
@@ -55,6 +56,8 @@ class recieveThread extends Thread {
 	public void run() {
 
 		String receiveMessage;
+		boolean didLogin = false;
+		
 		InputStream istream = null;
 		try {
 			istream = sock.getInputStream();
@@ -64,7 +67,10 @@ class recieveThread extends Thread {
 			System.exit(1);
 		}
 		receiveRead = new BufferedReader(new InputStreamReader(istream));
-		boolean didLogin = authenticate(receiveRead);
+		
+		while(!didLogin){
+			didLogin = authenticate(receiveRead);
+		}
 		
 		if (didLogin) {
 			while (true) {
@@ -83,8 +89,7 @@ class recieveThread extends Thread {
 
 	private boolean authenticate(BufferedReader receiveRead) {
 
-		String receiveMessage;
-
+		String receiveMessage = "";
 		String username = "";
 		String password = "";
 
@@ -107,14 +112,14 @@ class recieveThread extends Thread {
 
 		if (!isOnline(username)) {
 			System.out.println("User: " + username + " is already logged in.");
-			authenticate(receiveRead);
+			return false;
 		}
 
 		File f = new File("E:\\eclipse\\workspace\\SafeTalk\\accounts\\"
 				+ username + ".txt");
 		if (!f.exists() && !f.isDirectory()) {
 			pwrite.println("Login Failed. Try again.");
-			authenticate(receiveRead);
+			return false;
 		}
 		BufferedReader br = null;
 		try {
@@ -136,7 +141,7 @@ class recieveThread extends Thread {
 				return true;
 			} else {
 				pwrite.println("Login Failed. Try again.");
-				authenticate(receiveRead);
+				return false;
 			}
 		} catch (IOException e) {
 			System.err.println("Failed on readline");

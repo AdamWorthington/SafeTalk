@@ -2,9 +2,11 @@ import java.net.*;
 import java.io.*;
 
 public class ServerThread {
+	
 	static final int maxLog = 10;
 	static Server2 serverList[] = new Server2[maxLog]; 
 	static String nameList[] = new String[maxLog];
+	
 
 	public static void main(String[] args) throws IOException {
 		int checkLogin = 0;
@@ -35,6 +37,7 @@ public class ServerThread {
 		for(int i = 0; i < maxLog; i++){
 			if(ServerThread.nameList[i] == null){
 				System.out.println("assigning " + i);
+				ServerThread.nameList[i] = "NOTNULL";
 				return i;
 			}
 		}
