@@ -3,17 +3,20 @@ import java.net.*;
 import java.util.ArrayList;
 
 public class Server2 extends Thread {
-	
+
 	public Socket sock; // Socket name for reference
 	PrintWriter pwrite; // Writing tool to talk to client
 	int id = -1;
 	@SuppressWarnings("unused")
 	private Socket socket;
+	int maxLog;
 
-	public Server2(Socket socket, int counter) { // basic constructor
+	public Server2(Socket socket, int counter, int maxLog) { // basic
+																// constructor
 		super("ServerThread");
 		this.sock = socket;
 		this.id = counter;
+		this.maxLog = maxLog;
 	}
 
 	public void run() {
@@ -25,13 +28,12 @@ public class Server2 extends Thread {
 			e1.printStackTrace();
 		}
 		pwrite = new PrintWriter(ostream, true);
-		if(id == -1){
-			
+		if (id == -1) {
+
 			pwrite.println("Server is too busy at the moment. Try again later. SERVER_COMMAND:EXIT");
 			return;
-		}
-		else{
-			new recieveThread(sock, pwrite, id).start();
+		} else {
+			new recieveThread(sock, pwrite, id, maxLog).start();
 		}
 	}
 
@@ -46,18 +48,20 @@ class recieveThread extends Thread {
 	Socket sock;
 	PrintWriter pwrite;
 	int id;
-	
-	public recieveThread(Socket socket, PrintWriter pwriter, int id){
+	int maxLog;
+
+	public recieveThread(Socket socket, PrintWriter pwriter, int id, int maxLog) {
 		this.sock = socket;
 		this.pwrite = pwriter;
 		this.id = id;
+		this.maxLog = maxLog;
 	}
-	
+
 	public void run() {
 
 		String receiveMessage;
 		boolean didLogin = false;
-		
+
 		InputStream istream = null;
 		try {
 			istream = sock.getInputStream();
@@ -67,24 +71,102 @@ class recieveThread extends Thread {
 			System.exit(1);
 		}
 		receiveRead = new BufferedReader(new InputStreamReader(istream));
-		
-		while(!didLogin){
+
+		while (!didLogin) {
 			didLogin = authenticate(receiveRead);
 		}
-		
+
 		if (didLogin) {
+			
 			while (true) {
 				try {
 					if ((receiveMessage = receiveRead.readLine()) != null) {
-						System.out.println(receiveMessage);
+						processMessage(receiveMessage);
 					}
 				} catch (IOException e) {
-					
+
 					removeOnline();
 					return;
 				}
 			}
 		}
+	}
+
+	private void sendMessage(String s) {
+		pwrite.println(s);
+	}
+
+	private void processMessage(String input) {
+		String firstWord;
+		String help = "/Hello - say hi to your friendly server\n"
+				+ "/whoami - find out who you trully are on the inside... of the server.\n"
+				+ "/help - What is the number for 911 again?\n"
+				+ "/list - Lists all online users>";
+
+		input = input.toLowerCase();
+		if(input.contains(" ")){
+			firstWord = input.substring(0, input.indexOf(" "));
+			input = input.substring((input.indexOf(" ") + 1));
+		}
+		else{
+			firstWord = input;
+		}
+		//Start commands
+		
+		switch (firstWord) {
+
+		case "/hello": {
+			sendMessage("Hey");
+			break;
+		}
+		case "/list": {
+			String temp = "";
+			for (int i = 0; i < maxLog; i++) {
+				if(ServerThread.nameList[i] != null){
+					temp += ServerThread.nameList[i] + "\n";
+				}
+			}
+			sendMessage(temp);
+			break;
+		}
+		case "/whoami": {
+			String p = sock.getRemoteSocketAddress().toString();
+			sendMessage("You are " + currentUser + ". Connected on IP: " + p);
+			break;
+		}
+		case "/help": {
+			sendMessage(help);
+			break;
+
+		}
+		case "/msg": {
+			
+			
+			int pos = input.indexOf(" ");
+			String name = input.substring(0, pos);
+			input = input.substring(pos + 1);
+		
+			boolean check = false;
+			for (int i = 0; i < maxLog; i++) {
+				if (ServerThread.nameList[i] != null) {
+					if (ServerThread.nameList[i].equalsIgnoreCase(name)) {
+						ServerThread.serverList[i].sendMessage("[" + currentUser + "]: " + input);
+						check = false;
+					}
+				}
+			}
+			if(check){
+				pwrite.println("Couldn't find user: " + name);
+			}
+			break;
+		}
+		default: {
+			sendMessage("Didn't recognize command: \"" + input + "\"");
+		}
+		}
+		
+		//End commands
+		
 	}
 
 	private boolean authenticate(BufferedReader receiveRead) {
@@ -111,7 +193,7 @@ class recieveThread extends Thread {
 		}
 
 		if (!isOnline(username)) {
-			System.out.println("User: " + username + " is already logged in.");
+			pwrite.println("User: " + username + " is already logged in.");
 			return false;
 		}
 
@@ -135,6 +217,8 @@ class recieveThread extends Thread {
 			if (line.equals(password)) {
 				currentUser = username;
 				System.out.println(currentUser + " has logged in. ");
+				System.out.println("added " + currentUser + " to pos " + id);
+				
 				ServerThread.nameList[id] = currentUser;
 				pwrite.println("Login passed");
 				addOnline();
@@ -203,10 +287,10 @@ class recieveThread extends Thread {
 	}
 
 	public void removeOnline() {
-		
+
 		ServerThread.nameList[id] = null;
 		ServerThread.serverList[id] = null;
-		
+
 		String file = "E:\\eclipse\\workspace\\SafeTalk\\status\\online.txt";
 		try {
 

@@ -16,14 +16,14 @@ public class ServerThread {
 		}
 		int portNumber = Integer.parseInt(args[0]);
 		introMessage(portNumber);
-		
+		clearOnlineList();
 		new recieveThreadMain(maxLog).start();
 		
 		try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
 			while (true) {
-				Server2 curr = new Server2(serverSocket.accept(), checkLogin = assignLogin());
+				Server2 curr = new Server2(serverSocket.accept(), checkLogin = assignLogin(), maxLog);
 				curr.start();
-				if(checkLogin > 0){
+				if(checkLogin >= 0){
 					serverList[checkLogin] = curr;
 				}
 			}
@@ -36,13 +36,26 @@ public class ServerThread {
 	public static int assignLogin(){
 		for(int i = 0; i < maxLog; i++){
 			if(ServerThread.nameList[i] == null){
-				System.out.println("assigning " + i);
+				
 				ServerThread.nameList[i] = "NOTNULL";
 				return i;
 			}
 		}
-		System.out.println("assigning 1");
+		
 		return -1;
+	}
+	
+	public static void clearOnlineList(){
+		File file = new File("E:\\eclipse\\workspace\\SafeTalk\\status\\online.txt");
+		PrintWriter writer = null;
+		try {
+			writer = new PrintWriter(file);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		writer.print("");
+		writer.close();
 	}
 	
 	public static void introMessage(int portNumber) {
@@ -126,6 +139,7 @@ class recieveThreadMain extends Thread {
 			for (int i = 0; i < maxLog; i++) {
 				if (ServerThread.nameList[i] != null) {
 					if (ServerThread.nameList[i].equalsIgnoreCase(name)) {
+					
 						ServerThread.serverList[i].sendMessage("[SERVER]: " + line);
 						check = false;
 					}
@@ -133,6 +147,22 @@ class recieveThreadMain extends Thread {
 			}
 			if(check){
 				print("Couldn't find user: " + name, 0);
+			}
+			break;
+		}
+		case "/msg2": {
+			line = line.substring(pos + 1);
+			pos = line.indexOf(" ");
+			String name = line.substring(0, pos);
+			line = line.substring(pos + 1);
+			ServerThread.serverList[Integer.parseInt(name)].sendMessage(line);
+			break;
+		}
+		case "/slots": {
+			for(int i = 0; i < maxLog; i++){
+				if(ServerThread.serverList[i] != null){
+					System.out.println("Position " + i + " is in use.");
+				}
 			}
 			break;
 		}
