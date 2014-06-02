@@ -166,6 +166,16 @@ class recieveThreadMain extends Thread {
 			}
 			break;
 		}
+		case "/broadcast": {
+			line = line.substring(pos + 1);
+			
+			for(int i = 0; i < maxLog; i++){
+				if(ServerThread.serverList[i] != null){
+					ServerThread.serverList[i].sendMessage("[SERVER BROADCAST]: " + line);
+				}
+			}
+			break;
+		}
 		default: {
 			print("The command \"" + instruction + "\" was not recognized.", 0);
 			print("Please use the syntax \"/<command> <target> <info>\"", 0);

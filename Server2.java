@@ -81,7 +81,7 @@ class recieveThread extends Thread {
 			while (true) {
 				try {
 					if ((receiveMessage = receiveRead.readLine()) != null) {
-						processMessage(receiveMessage);
+						processMessage(receiveMessage, "normal");
 					}
 				} catch (IOException e) {
 
@@ -96,13 +96,15 @@ class recieveThread extends Thread {
 		pwrite.println(s);
 	}
 
-	private void processMessage(String input) {
+	private void processMessage(String input, String special) {
 		String firstWord;
 		String help = "/Hello - say hi to your friendly server\n"
 				+ "/whoami - find out who you trully are on the inside... of the server.\n"
 				+ "/help - What is the number for 911 again?\n"
-				+ "/list - Lists all online users>";
-
+				+ "/list - Lists all online user\n>"
+				+ "/msg <name> <message> - Sends a message to an online user\n";
+				//+ "/msgGroup <name> <name> <name> ... <\"Message\">";
+	
 		//input = input.toLowerCase();
 		if(input.contains(" ")){
 			firstWord = input.substring(0, input.indexOf(" "));
@@ -173,8 +175,14 @@ class recieveThread extends Thread {
 			}
 			break;
 		}
+		case "/msgGroup": {
+			break;
+		}
+		
+		
 		case "/logout": {
 			sendMessage("SERVER_COMMAND:EXIT");
+			break;
 		}
 		default: {
 			sendMessage("Didn't recognize command: \"" + input + "\"");
@@ -358,4 +366,5 @@ class recieveThread extends Thread {
 			System.out.println("Failed at IO in METHOD: removeOnline ");
 		}
 	}
+	
 }
