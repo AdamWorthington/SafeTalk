@@ -103,9 +103,10 @@ class recieveThread extends Thread {
 				+ "/help - What is the number for 911 again?\n"
 				+ "/list - Lists all online users>";
 
-		input = input.toLowerCase();
+		//input = input.toLowerCase();
 		if(input.contains(" ")){
 			firstWord = input.substring(0, input.indexOf(" "));
+			firstWord = firstWord.toLowerCase();
 			input = input.substring((input.indexOf(" ") + 1));
 		}
 		else{
@@ -143,9 +144,21 @@ class recieveThread extends Thread {
 			
 			
 			int pos = input.indexOf(" ");
+			if(pos == -1){
+				break;
+			}
 			String name = input.substring(0, pos);
 			input = input.substring(pos + 1);
-		
+			if(name == null){
+				name = "";
+			}
+			if(input == null){
+				input = "";
+			}
+			if(input.endsWith("SERVER_COMMAND:EXIT")){
+				pwrite.println("Message can not end in \"SERVER_COMMAND:EXIT\"");
+				break;
+			}
 			boolean check = false;
 			for (int i = 0; i < maxLog; i++) {
 				if (ServerThread.nameList[i] != null) {
@@ -159,6 +172,9 @@ class recieveThread extends Thread {
 				pwrite.println("Couldn't find user: " + name);
 			}
 			break;
+		}
+		case "/logout": {
+			sendMessage("SERVER_COMMAND:EXIT");
 		}
 		default: {
 			sendMessage("Didn't recognize command: \"" + input + "\"");
@@ -216,8 +232,7 @@ class recieveThread extends Thread {
 			String line = br.readLine();
 			if (line.equals(password)) {
 				currentUser = username;
-				System.out.println(currentUser + " has logged in. ");
-				System.out.println("added " + currentUser + " to pos " + id);
+				System.out.println(currentUser + " has logged in to pos " + id);
 				
 				ServerThread.nameList[id] = currentUser;
 				pwrite.println("Login passed");
