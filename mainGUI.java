@@ -41,7 +41,7 @@ public class mainGUI extends JPanel implements ActionListener {
 	
 	  public void actionPerformed(ActionEvent evt) {
 	        String text = textField.getText();
-	        appendIt(text);
+	        //appendIt(text);
 	        pwrite.println(text);
 	        textField.setText("");
 	 

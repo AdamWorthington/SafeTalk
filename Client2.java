@@ -27,7 +27,6 @@ public class Client2 {
 			System.out.flush();
 		}
 	}
-
 }
 
 class recieveThread2 extends Thread {

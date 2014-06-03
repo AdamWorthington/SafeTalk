@@ -97,21 +97,24 @@ class recieveThread extends Thread {
 	}
 
 	private void processMessage(String input, String special) {
+		int checkWords = 0;
 		String firstWord;
 		String help = "/Hello - say hi to your friendly server\n"
 				+ "/whoami - find out who you trully are on the inside... of the server.\n"
 				+ "/help - What is the number for 911 again?\n"
-				+ "/list - Lists all online user\n>"
-				+ "/msg <name> <message> - Sends a message to an online user\n";
+				+ "/list - Lists all online user\n"
+				+ "/msg <name> <message> - Sends a message to an online user\n"
+				+ "/setpass <New Password> - resets your password";
 				//+ "/msgGroup <name> <name> <name> ... <\"Message\">";
 	
 		//input = input.toLowerCase();
 		if(input.contains(" ")){
 			firstWord = input.substring(0, input.indexOf(" "));
-			firstWord = firstWord.toLowerCase();
+			
 			input = input.substring((input.indexOf(" ") + 1));
 		}
 		else{
+			checkWords = 1;
 			firstWord = input;
 		}
 		//Start commands
@@ -165,7 +168,8 @@ class recieveThread extends Thread {
 			for (int i = 0; i < maxLog; i++) {
 				if (ServerThread.nameList[i] != null) {
 					if (ServerThread.nameList[i].equalsIgnoreCase(name)) {
-						ServerThread.serverList[i].sendMessage("[" + currentUser + "]: " + input);
+						ServerThread.serverList[i].sendMessage("(Private)[" + currentUser + "]: " + input);
+						pwrite.println("(Sent) [" + name + "]: " + input);
 						check = false;
 					}
 				}
@@ -174,6 +178,18 @@ class recieveThread extends Thread {
 				pwrite.println("Couldn't find user: " + name);
 			}
 			break;
+		}
+		case "/setpass":{
+			File file = new File("E:\\eclipse\\workspace\\SafeTalk\\accounts\\" + currentUser + ".txt");
+			PrintWriter writer = null;
+			try {
+				writer = new PrintWriter(file);
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			writer.print(input);
+			writer.close();
 		}
 		case "/msgGroup": {
 			break;
@@ -185,7 +201,21 @@ class recieveThread extends Thread {
 			break;
 		}
 		default: {
-			sendMessage("Didn't recognize command: \"" + input + "\"");
+			if(firstWord.startsWith("/")){
+				pwrite.println("Didn't recognize command...");
+				break;
+			}
+			for(int i = 0; i < maxLog; i++){
+				if(ServerThread.serverList[i] != null){
+					if(checkWords == 0){
+					ServerThread.serverList[i].sendMessage("[" + currentUser + "]: " + firstWord + " " + input);
+					}
+					else{
+						ServerThread.serverList[i].sendMessage("[" + currentUser + "]: " + firstWord);
+					}
+				}
+			}
+			break;
 		}
 		}
 		
