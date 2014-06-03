@@ -217,14 +217,14 @@ class recieveThread extends Thread {
 		}
 
 		if (!isOnline(username)) {
-			pwrite.println("User: " + username + " is already logged in.");
+			pwrite.println("User: " + username + " is already logged in. 0");
 			return false;
 		}
 
 		File f = new File("E:\\eclipse\\workspace\\SafeTalk\\accounts\\"
 				+ username + ".txt");
 		if (!f.exists() && !f.isDirectory()) {
-			pwrite.println("Login Failed. Try again.");
+			pwrite.println("Login Failed. Try again. 0");
 			return false;
 		}
 		BufferedReader br = null;
@@ -243,11 +243,11 @@ class recieveThread extends Thread {
 				System.out.println(currentUser + " has logged in to pos " + id);
 				
 				ServerThread.nameList[id] = currentUser;
-				pwrite.println("Login passed");
+				pwrite.println("Login passed 1");
 				addOnline();
 				return true;
 			} else {
-				pwrite.println("Login Failed. Try again.");
+				pwrite.println("Login Failed. Try again. 0");
 				return false;
 			}
 		} catch (IOException e) {

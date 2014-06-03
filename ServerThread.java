@@ -1,7 +1,7 @@
 import java.net.*;
 import java.io.*;
 
-public class ServerThread {
+public class ServerThread{
 	
 	static final int maxLog = 10;
 	static Server2 serverList[] = new Server2[maxLog]; 
@@ -185,3 +185,4 @@ class recieveThreadMain extends Thread {
 		}
 	}
 }
+
