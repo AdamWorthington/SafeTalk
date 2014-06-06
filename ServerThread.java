@@ -37,7 +37,7 @@ public class ServerThread{
 		for(int i = 0; i < maxLog; i++){
 			if(ServerThread.nameList[i] == null){
 				
-				ServerThread.nameList[i] = "NOTNULL";
+				//ServerThread.nameList[i] = "NOTNULL";
 				return i;
 			}
 		}

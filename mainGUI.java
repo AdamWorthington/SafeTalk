@@ -19,6 +19,7 @@ public class mainGUI extends JPanel implements ActionListener {
 	
 	public mainGUI(PrintWriter pwrite) {
 		 super(new GridBagLayout());
+		 
 			this.pwrite = pwrite;
 	        textField = new JTextField(20);
 	        textField.addActionListener(this);

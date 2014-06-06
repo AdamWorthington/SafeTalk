@@ -43,10 +43,12 @@ public class logGUI extends JFrame{
 				System.out.println("Login successful");
 				runMainGUI();
 			} else {
-				System.out.println("login failed");
+				
 			}
 		} else {
 			System.out.println("Login canceled");
+			
+			System.exit(1);
 		}
 	}
 	public void passed(){
@@ -57,7 +59,7 @@ public class logGUI extends JFrame{
 	}
 	mainGUI mGUI;
 	public void runMainGUI(){
-		 JFrame frame = new JFrame("mainGUI");
+		 JFrame frame = new JFrame("IRC");
 	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	 
 	        //Add contents to the window.

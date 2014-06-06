@@ -1,6 +1,8 @@
 import java.io.*;
 import java.net.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class Server2 extends Thread {
 
@@ -97,6 +99,9 @@ class recieveThread extends Thread {
 	}
 
 	private void processMessage(String input, String special) {
+		
+		record(input);
+		
 		int checkWords = 0;
 		String firstWord;
 		String help = "/Hello - say hi to your friendly server\n"
@@ -220,6 +225,18 @@ class recieveThread extends Thread {
 		}
 		
 		//End commands
+		
+	}
+
+	private void record(String input) {
+		
+		String timeStamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
+		
+		try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("E:\\eclipse\\workspace\\SafeTalk\\logs\\" + currentUser + ".txt", true)))) {
+		    out.println(timeStamp + ": " + input);
+		}catch (IOException e) {
+		    System.err.println("Couldn't find user record: " + currentUser);
+		}
 		
 	}
 

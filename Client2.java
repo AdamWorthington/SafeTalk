@@ -11,7 +11,6 @@ public class Client2 {
 				System.in));
 		OutputStream ostream = sock.getOutputStream();
 		PrintWriter pwrite = new PrintWriter(ostream, true);
-
 		logGUI curr = new logGUI(pwrite);
 
 		new recieveThread2(sock, curr).start();
