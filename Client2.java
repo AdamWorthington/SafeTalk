@@ -48,8 +48,7 @@ class recieveThread2 extends Thread {
 			e.printStackTrace();
 			System.exit(1);
 		}
-		BufferedReader receiveRead = new BufferedReader(new InputStreamReader(
-				istream));
+		BufferedReader receiveRead = new BufferedReader(new InputStreamReader(istream));
 
 		while (true) {
 			try {
@@ -88,12 +87,10 @@ class recieveThread2 extends Thread {
 								wGUI.mGUI.game.racquet.setXPos(i, x);
 								wGUI.mGUI.game.racquet.setYPos(i, y);
 							}
-							
 						}
 						else{
 							wGUI.appendIt(receiveMessage);
-						}
-						
+						}	
 					}
 				}
 			} catch (IOException e) {
@@ -103,5 +100,4 @@ class recieveThread2 extends Thread {
 			}
 		}
 	}
-
 }

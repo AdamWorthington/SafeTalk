@@ -11,7 +11,8 @@ import javax.swing.JPanel;
 @SuppressWarnings("serial")
 public class Game extends JPanel {
 
-	PrintWriter pwrite;
+	@SuppressWarnings("unused")
+	private PrintWriter pwrite;
 	Racquet racquet;
 
 	public Game(PrintWriter pwrite) throws InterruptedException {
@@ -36,8 +37,6 @@ public class Game extends JPanel {
 		new Game2(this).start();;
 	}
 
-	
-	
 	private void move() {
 		racquet.move();
 	}
@@ -46,8 +45,7 @@ public class Game extends JPanel {
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-				RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		racquet.paint(g2d);
 	}
 
@@ -59,7 +57,7 @@ public class Game extends JPanel {
 		}
 		
 		public void run() {
-			System.out.println("Made it");
+			
 			JFrame frame = new JFrame("Explore");
 			frame.add(game);
 			frame.setSize(700, 700);

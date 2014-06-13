@@ -7,8 +7,6 @@ public class logGUI extends JFrame{
 	private static final long serialVersionUID = 1L;
 	boolean logInCheck = false;
 
-	
-
 	public logGUI(PrintWriter pwrite) {
 		super("Server Client");
 		setSize(400, 300);

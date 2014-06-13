@@ -6,29 +6,26 @@ import java.io.PrintWriter;
 public class Racquet {
 	
 	PrintWriter pwrite;
-	private static final int WIDTH = 20;
-	private static final int HEIGHT = 20;
-	int x = 0;
-	int y = 0;
-	int tempx = 0;
-	int tempy = 0;
+	private final int WIDTH = 20;
+	private final int HEIGHT = 20;
+	private int x = 0;
+	private int y = 0;
 	
-	public int numberOnline = 0;
-	public String[] nameArray = new String[100];
-	public int[] xArray = new int[100];
-	public int[] yArray = new int[100];
+	private int numberOnline = 0;
+	private String[] nameArray = new String[10];
+	private int[] xArray = new int[10];
+	private int[] yArray = new int[10];
 		
-	int left = 0;
-	int right = 0;
-	int up = 0;
-	int down = 0;
+	private int left = 0;
+	private int right = 0;
+	private int up = 0;
+	private int down = 0;
 	
 	private Game game;
 
 	public Racquet(Game game, PrintWriter pwrite) {
 		this.game = game;
 		this.pwrite = pwrite;
-		System.out.println(pwrite);
 	}
 
 	public void move() {
@@ -45,8 +42,8 @@ public class Racquet {
 		
 		for(int i = 0; i < numberOnline; i++){
 			g.fillRect(xArray[i], yArray[i], WIDTH, HEIGHT);
+			g.drawString(nameArray[i], xArray[i] - 5, yArray[i] - 7);
 		}
-		
 	}
 
 	public void keyReleased(KeyEvent e) {
