@@ -16,6 +16,8 @@ public class mainGUI extends JPanel implements ActionListener {
 	protected JTextField textField;
     protected JTextArea textArea;
     private final static String newline = "\n";
+	private boolean gameNotStarted = true;
+	Game game;
 	
 	public mainGUI(PrintWriter pwrite) {
 		 super(new GridBagLayout());
@@ -42,8 +44,22 @@ public class mainGUI extends JPanel implements ActionListener {
 	
 	  public void actionPerformed(ActionEvent evt) {
 	        String text = textField.getText();
+	        
 	        //appendIt(text);
 	        pwrite.println(text);
+	        
+	        if(text.equals("/game") && gameNotStarted){
+	        	gameNotStarted = false;
+	        	try {
+					game = new Game(pwrite);
+					
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	        	
+	        }
+	        
 	        textField.setText("");
 	 
 	        //Make sure the new text is visible, even if there

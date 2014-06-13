@@ -59,10 +59,41 @@ class recieveThread2 extends Thread {
 							wGUI.passed();
 						}
 					} else {
-						wGUI.appendIt(receiveMessage);
+						
 						if (receiveMessage.endsWith("SERVER_COMMAND:EXIT")) {
 							System.exit(1);
 						}
+						else if(receiveMessage.endsWith("SERVER_COMMAND:POS")){
+							String temp = receiveMessage;
+							int pos = temp.indexOf(" ");
+							String numberOnline = temp.substring(0, pos);
+							temp = temp.substring(pos + 1);
+							int tempNum = Integer.parseInt(numberOnline);
+							wGUI.mGUI.game.racquet.setNumberOnline(tempNum);
+							String name = "";
+							int x = 0;
+							int y = 0;
+							
+							for(int i = 0; i < tempNum; i++){
+								pos = temp.indexOf(" ");
+								name = temp.substring(0, pos);
+								temp = temp.substring(pos + 1);
+								pos = temp.indexOf(" ");
+								x = Integer.parseInt(temp.substring(0, pos));
+								temp = temp.substring(pos + 1);
+								pos = temp.indexOf(" ");
+								y = Integer.parseInt(temp.substring(0, pos));
+								temp = temp.substring(pos + 1);
+								wGUI.mGUI.game.racquet.setNamePos(i, name);
+								wGUI.mGUI.game.racquet.setXPos(i, x);
+								wGUI.mGUI.game.racquet.setYPos(i, y);
+							}
+							
+						}
+						else{
+							wGUI.appendIt(receiveMessage);
+						}
+						
 					}
 				}
 			} catch (IOException e) {

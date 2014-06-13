@@ -51,7 +51,9 @@ class recieveThread extends Thread {
 	PrintWriter pwrite;
 	int id;
 	int maxLog;
-
+	Player player;
+	boolean notInGame = true;
+	
 	public recieveThread(Socket socket, PrintWriter pwriter, int id, int maxLog) {
 		this.sock = socket;
 		this.pwrite = pwriter;
@@ -99,8 +101,10 @@ class recieveThread extends Thread {
 	}
 
 	private void processMessage(String input, String special) {
+		if(!input.startsWith("/pos")){
+			record(input);
+		}
 		
-		record(input);
 		
 		int checkWords = 0;
 		String firstWord;
@@ -165,8 +169,8 @@ class recieveThread extends Thread {
 			if(input == null){
 				input = "";
 			}
-			if(input.endsWith("SERVER_COMMAND:EXIT")){
-				pwrite.println("Message can not end in \"SERVER_COMMAND:EXIT\"");
+			if(input.contains("SERVER_COMMAND")){
+				sendMessage("Message can not contain in \"SERVER_COMMAND\"");
 				break;
 			}
 			boolean check = false;
@@ -174,13 +178,13 @@ class recieveThread extends Thread {
 				if (ServerThread.nameList[i] != null) {
 					if (ServerThread.nameList[i].equalsIgnoreCase(name)) {
 						ServerThread.serverList[i].sendMessage("(Private)[" + currentUser + "]: " + input);
-						pwrite.println("(Sent) [" + name + "]: " + input);
+						sendMessage("(Sent) [" + name + "]: " + input);
 						check = false;
 					}
 				}
 			}
 			if(check){
-				pwrite.println("Couldn't find user: " + name);
+				sendMessage("Couldn't find user: " + name);
 			}
 			break;
 		}
@@ -200,14 +204,36 @@ class recieveThread extends Thread {
 			break;
 		}
 		
-		
 		case "/logout": {
 			sendMessage("SERVER_COMMAND:EXIT");
 			break;
 		}
+		
+		case "/game":{
+			if(notInGame){
+				player = new Player();
+				player.updateName(currentUser);
+				ServerThread.playerList[id] = player;
+				notInGame = false;
+			}
+		}
+		
+		case "/pos":{
+			int pos = input.indexOf(" ");
+			if(pos == -1){
+				break;
+			}
+			String name = input.substring(0, pos);
+			input = input.substring(pos + 1);
+			player.updateX(Integer.parseInt(name));
+			player.updateY(Integer.parseInt(input));
+			sendMessage(posString() + " SERVER_COMMAND:POS");
+			break;
+		}
+		
 		default: {
 			if(firstWord.startsWith("/")){
-				pwrite.println("Didn't recognize command...");
+				sendMessage("Didn't recognize command...");
 				break;
 			}
 			for(int i = 0; i < maxLog; i++){
@@ -228,10 +254,21 @@ class recieveThread extends Thread {
 		
 	}
 
+	private String posString(){
+		String total = "";
+		int counter = 0;
+		for(int i = 0; i < maxLog; i++){
+			if(ServerThread.playerList[i] != null){
+				total += " " + ServerThread.playerList[i].getName() + " " + ServerThread.playerList[i].getX() + " " + ServerThread.playerList[i].getY();
+				++counter;
+			}
+		}
+		total = counter + total;
+		return total;
+	}
+	
 	private void record(String input) {
-		
 		String timeStamp = new SimpleDateFormat("MM/dd/yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
-		
 		try(PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("E:\\eclipse\\workspace\\SafeTalk\\logs\\" + currentUser + ".txt", true)))) {
 		    out.println(timeStamp + ": " + input);
 		}catch (IOException e) {
@@ -360,6 +397,7 @@ class recieveThread extends Thread {
 
 		ServerThread.nameList[id] = null;
 		ServerThread.serverList[id] = null;
+		ServerThread.playerList[id] = null;
 
 		String file = "E:\\eclipse\\workspace\\SafeTalk\\status\\online.txt";
 		try {

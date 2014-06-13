@@ -1,12 +1,14 @@
 import java.net.*;
 import java.io.*;
 
+import javax.swing.JFrame;
+
 public class ServerThread{
 	
 	static final int maxLog = 10;
 	static Server2 serverList[] = new Server2[maxLog]; 
 	static String nameList[] = new String[maxLog];
-	
+	static Player playerList[] = new Player[maxLog];
 
 	public static void main(String[] args) throws IOException {
 		int checkLogin = 0;
@@ -36,12 +38,9 @@ public class ServerThread{
 	public static int assignLogin(){
 		for(int i = 0; i < maxLog; i++){
 			if(ServerThread.nameList[i] == null){
-				
-				//ServerThread.nameList[i] = "NOTNULL";
 				return i;
 			}
 		}
-		
 		return -1;
 	}
 	
@@ -88,6 +87,7 @@ public class ServerThread{
 class recieveThreadMain extends Thread {
 
 	int maxLog;
+	public JFrame frame;
 	public recieveThreadMain(int maxLog){
 		this.maxLog = maxLog;
 	}
@@ -166,6 +166,10 @@ class recieveThreadMain extends Thread {
 			}
 			break;
 		}
+		case "/game":{
+		
+			break;
+		}
 		case "/broadcast": {
 			line = line.substring(pos + 1);
 			
@@ -184,5 +188,6 @@ class recieveThreadMain extends Thread {
 		
 		}
 	}
+
 }
 
