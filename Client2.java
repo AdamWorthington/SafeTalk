@@ -7,8 +7,7 @@ public class Client2 {
 		String hostName = args[0];
 		int portNumber = Integer.parseInt(args[1]);
 		Socket sock = new Socket(hostName, portNumber);
-		BufferedReader keyRead = new BufferedReader(new InputStreamReader(
-				System.in));
+		BufferedReader keyRead = new BufferedReader(new InputStreamReader(System.in));
 		OutputStream ostream = sock.getOutputStream();
 		PrintWriter pwrite = new PrintWriter(ostream, true);
 		logGUI curr = new logGUI(pwrite);
@@ -94,8 +93,7 @@ class recieveThread2 extends Thread {
 					}
 				}
 			} catch (IOException e) {
-				System.out
-						.println("Server dissconnected... Killing current application.");
+				System.out.println("Server dissconnected... Killing current application.");
 				System.exit(1);
 			}
 		}
