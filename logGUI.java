@@ -55,19 +55,11 @@ public class logGUI extends JFrame{
 	public boolean getStatus(){
 		return logInCheck;
 	}
-	mainGUI mGUI;
+	BaseGUI bGUI;
 	public void runMainGUI(){
-		 JFrame frame = new JFrame("IRC");
-	        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	 
-	        //Add contents to the window.
-	        frame.add(mGUI = new mainGUI(pwrite));
-	 
-	        //Display the window.
-	        frame.pack();
-	        frame.setVisible(true);
+		 bGUI = new BaseGUI(pwrite);
 	}
 	public void appendIt(String s){
-		mGUI.appendIt(s);
+		bGUI.appendIt(s);
 	}
 }

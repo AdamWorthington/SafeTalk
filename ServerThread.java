@@ -8,7 +8,6 @@ public class ServerThread{
 	static final int maxLog = 10;
 	static Server2 serverList[] = new Server2[maxLog]; 
 	static String nameList[] = new String[maxLog];
-	static Player playerList[] = new Player[maxLog];
 
 	public static void main(String[] args) throws IOException {
 		int checkLogin = 0;
@@ -166,10 +165,7 @@ class recieveThreadMain extends Thread {
 			}
 			break;
 		}
-		case "/game":{
-		
-			break;
-		}
+
 		case "/broadcast": {
 			line = line.substring(pos + 1);
 			

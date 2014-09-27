@@ -51,8 +51,6 @@ class recieveThread extends Thread {
 	PrintWriter pwrite;
 	int id;
 	int maxLog;
-	Player player;
-	boolean notInGame = true;
 	
 	public recieveThread(Socket socket, PrintWriter pwriter, int id, int maxLog) {
 		this.sock = socket;
@@ -209,28 +207,6 @@ class recieveThread extends Thread {
 			break;
 		}
 		
-		case "/game":{
-			if(notInGame){
-				player = new Player();
-				player.updateName(currentUser);
-				ServerThread.playerList[id] = player;
-				notInGame = false;
-			}
-		}
-		
-		case "/pos":{
-			int pos = input.indexOf(" ");
-			if(pos == -1){
-				break;
-			}
-			String name = input.substring(0, pos);
-			input = input.substring(pos + 1);
-			player.updateX(Integer.parseInt(name));
-			player.updateY(Integer.parseInt(input));
-			sendMessage(posString() + " SERVER_COMMAND:POS");
-			break;
-		}
-		
 		default: {
 			if(firstWord.startsWith("/")){
 				sendMessage("Didn't recognize command...");
@@ -252,19 +228,6 @@ class recieveThread extends Thread {
 		
 		//End commands
 		
-	}
-
-	private String posString(){
-		String total = "";
-		int counter = 0;
-		for(int i = 0; i < maxLog; i++){
-			if(ServerThread.playerList[i] != null){
-				total += " " + ServerThread.playerList[i].getName() + " " + ServerThread.playerList[i].getX() + " " + ServerThread.playerList[i].getY();
-				++counter;
-			}
-		}
-		total = counter + total;
-		return total;
 	}
 	
 	private void record(String input) {
@@ -397,7 +360,6 @@ class recieveThread extends Thread {
 
 		ServerThread.nameList[id] = null;
 		ServerThread.serverList[id] = null;
-		ServerThread.playerList[id] = null;
 
 		String file = "E:\\eclipse\\workspace\\SafeTalk\\status\\online.txt";
 		try {

@@ -34,7 +34,7 @@ public class Game extends JPanel {
 			}
 		});
 		setFocusable(true);
-		new Game2(this).start();;
+		new Game2(this).start();
 	}
 
 	private void move() {
@@ -76,5 +76,4 @@ public class Game extends JPanel {
 			}
 		}
 	}
-
 }
