@@ -13,7 +13,7 @@ public class BaseGUI extends JFrame{
 	
 	
 	/***COMPONENTS TO ADD TO FRAME***/
-	mainGUI mGUI;
+	ChatBoxGUI mGUI;
 	/********************************/
 	
 	
@@ -27,7 +27,7 @@ public class BaseGUI extends JFrame{
     	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     	//Add contents to the window.
-    	frame.add(mGUI = new mainGUI(pwrite));
+    	frame.add(mGUI = new ChatBoxGUI(pwrite));
 
     	//Display the window.
     	frame.pack();
